@@ -107,6 +107,28 @@ exports.login = async (req, res) => {
     });
   }
 };
+exports.allusers = async (req, res) => {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+
+    const users = await User.find(keyword).find({
+      _id: { $ne: req.User._id },
+    });
+    res.send(users);
+  } catch (e) {
+    res.status(400).json({
+      success: false,
+      message: e.message,
+    });
+  }
+};
 
 // exports.forgotpass = async (req, res) => {
 //   try {
