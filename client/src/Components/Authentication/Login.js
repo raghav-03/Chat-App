@@ -3,15 +3,23 @@ import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginaction, clearerr } from "../../Redux/Actions/userAction";
+import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 const Login = () => {
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
+  const history = useHistory();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+
+  // For Redux
+  const dispatch = useDispatch();
+  const { error, loading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
 
   const submitHandler = async () => {
     try {
@@ -25,12 +33,22 @@ const Login = () => {
         });
         return;
       }
-      const config = { headers: { "Content-Type": "application/json" } };
-      const { data } = await axios.post(
-        `/user/login`,
-        { email, password },
-        config
-      );
+      dispatch(loginaction(email, password));
+    } catch (e) {}
+  };
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      dispatch(clearerr());
+    }
+
+    if (isAuthenticated) {
       toast({
         title: "Logged In Successfully",
         status: "success",
@@ -38,16 +56,9 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-    } catch (e) {
-      toast({
-        title: e.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      history.push("/chat");
     }
-  };
+  }, [dispatch, error, history, isAuthenticated]);
   return (
     <VStack spacing="5px">
       <FormControl id="email" isRequired>
@@ -78,6 +89,7 @@ const Login = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Log In
       </Button>

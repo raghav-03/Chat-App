@@ -3,8 +3,9 @@ import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { registeraction, clearerr } from "../../Redux/Actions/userAction";
 import { useHistory } from "react-router";
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -15,40 +16,24 @@ const Signup = () => {
   const [password, setPassword] = useState();
   const [avatar, setAvatar] = useState();
   const toast = useToast();
+  const history = useHistory();
+  // For Redux
+  const dispatch = useDispatch();
+  const { error, loading, isAuthenticated } = useSelector(
+    (state) => state.user
+  );
   const submitHandler = async () => {
-    try {
-      if (!name || !email || !password || !confirmpassword) {
-        toast({
-          title: "Please Fill All Fields",
-          status: "warning",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom",
-        });
-        return;
-      }
-      const config = { headers: { "Content-Type": "application/json" } };
-      const { data } = await axios.post(
-        `/user/signup`,
-        { name, email, password, avatar, confirmpassword },
-        config
-      );
+    if (!name || !email || !password || !confirmpassword) {
       toast({
-        title: "Signed In Successfully",
-        status: "success",
+        title: "Please Fill All Fields",
+        status: "warning",
         duration: 5000,
         isClosable: true,
         position: "bottom",
       });
-    } catch (e) {
-      toast({
-        title: e.response.data.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      return;
     }
+    dispatch(registeraction(name, email, password, avatar, confirmpassword));
   };
   const postDetails = (pic) => {
     const reader = new FileReader();
@@ -61,6 +46,14 @@ const Signup = () => {
 
     reader.readAsDataURL(pic);
   };
+  useEffect(() => {
+    if (error) {
+      dispatch(clearerr());
+    }
+    if (isAuthenticated) {
+      history.push("/chat");
+    }
+  }, [dispatch, error, history, isAuthenticated]);
   return (
     <VStack spacing="5px">
       <FormControl id="first-name" isRequired>
@@ -124,6 +117,7 @@ const Signup = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Sign Up
       </Button>
