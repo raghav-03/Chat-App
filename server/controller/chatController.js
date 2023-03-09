@@ -55,7 +55,6 @@ exports.accesschat = async (req, res) => {
 
 exports.fetchchat = async (req, res) => {
   try {
-    console.log(req.User._id);
     var allchat = await Chat.find({
       users: { $elemMatch: { $eq: req.User._id } },
     })

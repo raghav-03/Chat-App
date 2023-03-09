@@ -38,24 +38,24 @@ const Login = () => {
   };
   useEffect(() => {
     if (error) {
-      toast({
-        title: error,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      // toast({
+      //   title: error,
+      //   status: "error",
+      //   duration: 5000,
+      //   isClosable: true,
+      //   position: "bottom",
+      // });
       dispatch(clearerr());
     }
 
     if (isAuthenticated) {
-      toast({
-        title: "Logged In Successfully",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
+      // toast({
+      //   title: "Logged In Successfully",
+      //   status: "success",
+      //   duration: 5000,
+      //   isClosable: true,
+      //   position: "bottom",
+      // });
       history.push("/chat");
     }
   }, [dispatch, error, history, isAuthenticated]);

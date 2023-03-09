@@ -121,9 +121,27 @@ exports.allusers = async (req, res) => {
     const users = await User.find(keyword).find({
       _id: { $ne: req.User._id },
     });
-    res.send(users);
+    res.status(200).json({
+      success: true,
+      users,
+    });
   } catch (e) {
     res.status(400).json({
+      success: false,
+      message: e.message,
+    });
+  }
+};
+
+// Get User Details
+exports.getuserdetail = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      user: req.User,
+    });
+  } catch (e) {
+    return res.status(401).json({
       success: false,
       message: e.message,
     });
@@ -202,21 +220,6 @@ exports.allusers = async (req, res) => {
 //         message: "Token Either Expired or wrong ",
 //       });
 //     }
-//   }
-// };
-
-// // Get User Details
-// exports.getuserdetail = async (req, res) => {
-//   try {
-//     res.status(200).json({
-//       success: true,
-//       user: req.User,
-//     });
-//   } catch (e) {
-//     return res.status(401).json({
-//       success: false,
-//       message: e.message,
-//     });
 //   }
 // };
 

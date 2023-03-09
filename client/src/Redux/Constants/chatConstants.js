@@ -1,0 +1,12 @@
+export const SEARCH_REQUEST = "SEARCH_REQUEST";
+export const SEARCH_SUCCESS = "SEARCH_SUCCESS";
+export const SEARCH_FAIL = "SEARCH_FAIL";
+export const CLEAR_ERROR = "CLEAR_ERROR";
+
+export const CHAT_REQUEST = "CHAT_REQUEST";
+export const CHAT_SUCCESS = "CHAT_SUCCESS";
+export const CHAT_FAIL = "CHAT_FAIL";
+
+export const FETCH_CHAT_REQUEST = "FETCH_CHAT_REQUEST";
+export const FETCH_CHAT_SUCCESS = "FETCH_CHAT_SUCCESS";
+export const FETCH_CHAT_FAIL = "FETCH_CHAT_FAIL";

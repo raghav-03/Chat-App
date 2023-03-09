@@ -72,3 +72,16 @@ export const logoutaction = () => async (dispatch) => {
     });
   }
 };
+export const loadcredentials = () => async (dispatch) => {
+  try {
+    dispatch({ type: LOAD_REQUEST });
+
+    const { data } = await axios.get(`/user/userdetail`);
+    dispatch({ type: LOAD_SUCCESS, payload: data.user });
+  } catch (error) {
+    dispatch({
+      type: LOAD_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
