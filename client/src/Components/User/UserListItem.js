@@ -1,18 +1,9 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Box, Text } from "@chakra-ui/layout";
-import { useToast } from "@chakra-ui/toast";
-import { useDispatch, useSelector } from "react-redux";
-import { accessChat } from "../../Redux/Actions/chatAction";
-
-const UserListItem = ({ user }) => {
-  const dispatch = useDispatch();
-  const createchat = async (userId) => {
-    dispatch(accessChat(userId));
-  };
-
+const UserListItem = ({ user, handleFunction }) => {
   return (
     <Box
-      onClick={() => createchat(user._id)}
+      onClick={handleFunction}
       cursor="pointer"
       bg="#E8E8E8"
       _hover={{
@@ -20,7 +11,7 @@ const UserListItem = ({ user }) => {
         color: "white",
       }}
       w="100%"
-      d="flex"
+      display="flex"
       alignItems="center"
       color="black"
       px={3}

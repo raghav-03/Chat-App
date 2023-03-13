@@ -15,16 +15,19 @@ import {
 } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 
-const ProfileModal = ({ children }) => {
+const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useSelector((state) => state.user);
 
   return (
     <>
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton
+          display={{ base: "flex" }}
+          icon={<ViewIcon />}
+          onClick={onOpen}
+        />
       )}
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />

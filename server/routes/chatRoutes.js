@@ -5,6 +5,7 @@ const charcontroller = require("../controller/chatController");
 
 router.post("/", middleware.islogin, charcontroller.accesschat);
 router.get("/", middleware.islogin, charcontroller.fetchchat);
+router.post("/getchat", middleware.islogin, charcontroller.getchatbyid);
 router.post(
   "/create-group",
   middleware.islogin,

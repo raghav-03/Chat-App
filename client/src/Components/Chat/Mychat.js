@@ -1,14 +1,19 @@
 import { AddIcon } from "@chakra-ui/icons";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import ChatLoading from "./ChatLoading";
 import { Button } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchChat, clearerr } from "../../Redux/Actions/chatAction";
+import {
+  fetchChat,
+  clearerr,
+  getchatbyid,
+} from "../../Redux/Actions/chatAction";
+import GroupModal from "../../Pages/GroupModal";
+import { getSender } from "../../config/chatlogic";
 const MyChats = () => {
-  const [selectedChat, setSelectedChat] = useState("");
+  const [selectedChatId, setSelectedChatId] = useState("");
   const dispatch = useDispatch();
   const toast = useToast();
   const { allchatloading, allchaterror, chats } = useSelector(
@@ -17,11 +22,21 @@ const MyChats = () => {
   const { chaterror, chatloading, chat } = useSelector(
     (state) => state.accesschat
   );
+  const { groupchaterror, groupchatloading } = useSelector(
+    (state) => state.groupchatReducer
+  );
+  const { renamegroupchatloading, renamegroupchaterror } = useSelector(
+    (state) => state.RenameGroupReducer
+  );
+  const { addtogroupchatloading, addtogroupchaterror } = useSelector(
+    (state) => state.AddToGroupReducer
+  );
+  const { removefromgroupchatloading, removefromgroupchaterror } = useSelector(
+    (state) => state.RemoveFromGroupReducer
+  );
   const { user } = useSelector((state) => state.user);
+  const getchat = useSelector((state) => state.GetChatReducer);
 
-  const getSender = (users) => {
-    return users[0]._id === user._id ? users[1].name : users[0].name;
-  };
   useEffect(() => {
     if (allchaterror) {
       toast({
@@ -35,11 +50,44 @@ const MyChats = () => {
       dispatch(clearerr());
     }
     dispatch(fetchChat());
-  }, [dispatch, chaterror, chatloading]);
+  }, [
+    dispatch,
+    chaterror,
+    chatloading,
+    groupchaterror,
+    groupchatloading,
+    renamegroupchatloading,
+    renamegroupchaterror,
+    removefromgroupchatloading,
+    removefromgroupchaterror,
+  ]);
 
+  useEffect(() => {
+    dispatch(getchatbyid(selectedChatId));
+  }, [
+    dispatch,
+    selectedChatId,
+    renamegroupchatloading,
+    renamegroupchaterror,
+    addtogroupchatloading,
+    addtogroupchaterror,
+    removefromgroupchatloading,
+    removefromgroupchaterror,
+  ]);
+  useEffect(() => {
+    if (getchat === undefined || getchat.chat === undefined) {
+      return;
+    }
+    if (Object.keys(getchat.chat).length === 0) {
+      setSelectedChatId("");
+    }
+  }, [dispatch, getchat]);
   return (
     <Box
-      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{
+        base: selectedChatId ? "none" : "flex",
+        md: "flex",
+      }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -59,15 +107,15 @@ const MyChats = () => {
         alignItems="center"
       >
         My Chats
-        {/* <GroupChatModal> */}
-        <Button
-          display="flex"
-          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-          rightIcon={<AddIcon />}
-        >
-          New Group Chat
-        </Button>
-        {/* </GroupChatModal> */}
+        <GroupModal>
+          <Button
+            display="flex"
+            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            rightIcon={<AddIcon />}
+          >
+            New Group Chat
+          </Button>
+        </GroupModal>
       </Box>
       <Box
         display="flex"
@@ -83,17 +131,19 @@ const MyChats = () => {
           <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
-                onClick={() => setSelectedChat(chat)}
+                onClick={() => setSelectedChatId(chat._id)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChatId === chat._id ? "#38B2AC" : "#E8E8E8"}
+                color={selectedChatId === chat._id ? "white" : "black"}
                 px={3}
                 py={2}
                 borderRadius="lg"
                 key={chat._id}
               >
                 <Text>
-                  {!chat.isGroupChat ? getSender(chat.users) : chat.chatName}
+                  {!chat.isGroupChat
+                    ? getSender(user, chat.users)
+                    : chat.chatName}
                 </Text>
                 {/* 
                 {chat.latestMessage && (

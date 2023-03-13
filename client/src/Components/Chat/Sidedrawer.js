@@ -34,6 +34,8 @@ import { useHistory } from "react-router";
 import ProfileModal from "../../Pages/ProfileModal";
 import ChatLoading from "./ChatLoading";
 import UserListItem from "../User/UserListItem";
+import { accessChat } from "../../Redux/Actions/chatAction";
+
 const Sidedrawer = () => {
   const dispatch = useDispatch();
   const toast = useToast();
@@ -45,6 +47,11 @@ const Sidedrawer = () => {
   const { chaterror, chatloading, chat } = useSelector(
     (state) => state.accesschat
   );
+
+  const createchat = async (userId) => {
+    dispatch(accessChat(userId));
+    onClose();
+  };
 
   const [search, setSearch] = useState("");
   const logoutHandler = async (e) => {
@@ -119,7 +126,7 @@ const Sidedrawer = () => {
             >
               <Button variant="ghost" onClick={onOpen}>
                 <Search2Icon />
-                <Text d={{ base: "none", md: "flex" }} px={4}>
+                <Text display={{ base: "none", md: "flex" }} px={4}>
                   Search User
                 </Text>
               </Button>
@@ -167,7 +174,7 @@ const Sidedrawer = () => {
                   />
                 </MenuButton>
                 <MenuList>
-                  <ProfileModal>
+                  <ProfileModal user={user}>
                     <MenuItem>My Profile</MenuItem>
                   </ProfileModal>
                   <MenuDivider />
@@ -203,7 +210,7 @@ const Sidedrawer = () => {
                     <UserListItem
                       key={user._id}
                       user={user}
-                      // handleFunction={() => accessChat(user._id)}
+                      handleFunction={() => createchat(user._id)}
                     />
                   ))
                 )}

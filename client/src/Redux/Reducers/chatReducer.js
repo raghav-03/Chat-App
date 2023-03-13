@@ -9,6 +9,22 @@ import {
   FETCH_CHAT_REQUEST,
   FETCH_CHAT_SUCCESS,
   FETCH_CHAT_FAIL,
+  CREATE_GROUP_CHAT_REQUEST,
+  CREATE_GROUP_CHAT_SUCCESS,
+  CREATE_GROUP_CHAT_FAIL,
+  GET_CHAT_REQUEST,
+  GET_CHAT_SUCCESS,
+  GET_CHAT_FAIL,
+  GET_CHAT_RESET,
+  RENAME_GROUP_CHAT_REQUEST,
+  RENAME_GROUP_CHAT_SUCCESS,
+  RENAME_GROUP_CHAT_FAIL,
+  ADDTO_GROUP_CHAT_FAIL,
+  ADDTO_GROUP_CHAT_REQUEST,
+  ADDTO_GROUP_CHAT_SUCCESS,
+  REMOVE_FROM_GROUP_CHAT_FAIL,
+  REMOVE_FROM_GROUP_CHAT_REQUEST,
+  REMOVE_FROM_GROUP_CHAT_SUCCESS,
 } from "../Constants/chatConstants";
 export const SearchReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -89,6 +105,155 @@ export const allChatReducer = (state = { chats: [] }, action) => {
       return {
         ...state,
         allchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+export const GroupChatReducer = (state = { groupchat: {} }, action) => {
+  switch (action.type) {
+    case CREATE_GROUP_CHAT_REQUEST:
+      return {
+        groupchatloading: true,
+      };
+    case CREATE_GROUP_CHAT_SUCCESS:
+      return {
+        ...state,
+        groupchatloading: false,
+        groupchat: action.payload,
+      };
+    case CREATE_GROUP_CHAT_FAIL:
+      return {
+        ...state,
+        groupchatloading: false,
+        groupchat: {},
+        groupchaterror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        groupchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const GetChatReducer = (state = { chat: {} }, action) => {
+  switch (action.type) {
+    case GET_CHAT_REQUEST:
+      return {
+        getchatloading: true,
+      };
+    case GET_CHAT_SUCCESS:
+      return {
+        ...state,
+        getchatloading: false,
+        chat: action.payload,
+      };
+    case GET_CHAT_FAIL:
+      return {
+        ...state,
+        getchatloading: false,
+        chat: {},
+        getchaterror: action.payload,
+      };
+    case GET_CHAT_RESET:
+      return {
+        getchatloading: false,
+        chat: {},
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        getchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const RenameGroupReducer = (state = { chat: {} }, action) => {
+  switch (action.type) {
+    case RENAME_GROUP_CHAT_REQUEST:
+      return {
+        renamegroupchatloading: true,
+      };
+    case RENAME_GROUP_CHAT_SUCCESS:
+      return {
+        ...state,
+        renamegroupchatloading: false,
+        chat: action.payload,
+      };
+    case RENAME_GROUP_CHAT_FAIL:
+      return {
+        ...state,
+        renamegroupchatloading: false,
+        chat: {},
+        renamegroupchaterror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        renamegroupchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const AddToGroupReducer = (state = { chat: {} }, action) => {
+  switch (action.type) {
+    case ADDTO_GROUP_CHAT_REQUEST:
+      return {
+        addtogroupchatloading: true,
+      };
+    case ADDTO_GROUP_CHAT_SUCCESS:
+      return {
+        ...state,
+        addtogroupchatloading: false,
+        chat: action.payload,
+      };
+    case ADDTO_GROUP_CHAT_FAIL:
+      return {
+        ...state,
+        addtogroupchatloading: false,
+        chat: {},
+        addtogroupchaterror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        addtogroupchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const RemoveFromGroupReducer = (state = { chat: {} }, action) => {
+  switch (action.type) {
+    case REMOVE_FROM_GROUP_CHAT_REQUEST:
+      return {
+        removefromgroupchatloading: true,
+      };
+    case REMOVE_FROM_GROUP_CHAT_SUCCESS:
+      return {
+        ...state,
+        removefromgroupchatloading: false,
+        chat: action.payload,
+      };
+    case REMOVE_FROM_GROUP_CHAT_FAIL:
+      return {
+        ...state,
+        removefromgroupchatloading: false,
+        chat: {},
+        removefromgroupchaterror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        removefromgroupchaterror: null,
       };
     default:
       return state;
