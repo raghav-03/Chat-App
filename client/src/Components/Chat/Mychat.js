@@ -81,7 +81,7 @@ const MyChats = () => {
     if (Object.keys(getchat.chat).length === 0) {
       setSelectedChatId("");
     }
-  }, [dispatch, getchat]);
+  }, [dispatch, getchat.chat]);
   return (
     <Box
       display={{

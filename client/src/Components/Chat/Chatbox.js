@@ -10,7 +10,7 @@ const Chatbox = () => {
 
   return (
     <Fragment>
-      {getchatloading ? (
+      {Object.keys(chat).length === 0 && getchatloading ? (
         <Loader />
       ) : (
         <Fragment>

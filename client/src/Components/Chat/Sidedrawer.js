@@ -179,12 +179,6 @@ const Sidedrawer = () => {
                   </ProfileModal>
                   <MenuDivider />
                   <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-
-                  {/* To DO */}
-                  {/* <MenuDivider />
-                  <MenuItem onClick={logoutHandler}>Edit Profile</MenuItem>
-                  <MenuDivider />
-                  <MenuItem onClick={logoutHandler}>Change Password</MenuItem> */}
                 </MenuList>
               </Menu>
             </div>

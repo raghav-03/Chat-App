@@ -143,7 +143,9 @@ export const GetChatReducer = (state = { chat: {} }, action) => {
   switch (action.type) {
     case GET_CHAT_REQUEST:
       return {
+        ...state,
         getchatloading: true,
+        getchaterror: null,
       };
     case GET_CHAT_SUCCESS:
       return {
