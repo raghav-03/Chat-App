@@ -32,7 +32,7 @@ import {
   GET_MESSAGE_FAIL,
 } from "../Constants/chatConstants";
 import axios from "axios";
-
+// import { socket } from "../../Services/Socket";
 export const searchaction =
   (search = "") =>
   async (dispatch) => {
@@ -171,7 +171,8 @@ export const sendmessage = (chatId, content) => async (dispatch) => {
     const config = { headers: { "Content-Type": "application/json" } };
     let link = `/message`;
     const { data } = await axios.post(link, { chatId, content }, config);
-    dispatch({ type: SEND_MESSAGE_SUCCESS, payload: data.chat });
+    dispatch({ type: SEND_MESSAGE_SUCCESS, payload: data.data });
+    // socket.emit("new message", data.data);
   } catch (error) {
     dispatch({
       type: SEND_MESSAGE_FAIL,

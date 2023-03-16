@@ -32,6 +32,7 @@ import {
   SEND_MESSAGE_REQUEST,
   SEND_MESSAGE_SUCCESS,
   SET_MESSAGE_LOADING,
+  SEND_MESSAGE_RESET,
 } from "../Constants/chatConstants";
 export const SearchReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -269,28 +270,39 @@ export const RemoveFromGroupReducer = (state = { chat: {} }, action) => {
   }
 };
 
-export const SendMessageReducer = (state = {}, action) => {
+export const SendMessageReducer = (state = { newchat: {} }, action) => {
   switch (action.type) {
     case SEND_MESSAGE_REQUEST:
       return {
         sendmessageloading: true,
+        sendmessagesuccess: false,
       };
     case SEND_MESSAGE_SUCCESS:
       return {
         ...state,
+        newchat: action.payload,
+        sendmessagesuccess: true,
         sendmessageloading: false,
       };
     case SEND_MESSAGE_FAIL:
       return {
         ...state,
         sendmessageloading: false,
+        sendmessagesuccess: false,
         sendmessageerror: action.payload,
       };
     case CLEAR_ERROR:
       return {
         ...state,
         sendmessageerror: null,
+        sendmessagesuccess: false,
       };
+    case SEND_MESSAGE_RESET:
+      return {
+        ...state,
+        sendmessagesuccess: false,
+      };
+
     default:
       return state;
   }

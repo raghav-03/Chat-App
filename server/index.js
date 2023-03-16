@@ -27,6 +27,43 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-app.listen(process.env.Port || 3601, () =>
+const server = app.listen(process.env.Port || 3601, () =>
   console.log(`Sever Running on port ${process.env.Port || 3601}`)
 );
+const io = require("socket.io")(server, {
+  pingtimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("Connected to socket.io");
+  socket.on("setup", async (userData) => {
+    socket.join(userData._id);
+    socket.emit("connected");
+  });
+
+  socket.on("join chat", async (room) => {
+    socket.join(room);
+    console.log("User Joined Room: " + room);
+  });
+
+  socket.on("typing", async (room) => socket.in(room).emit("typing"));
+  socket.on("stop typing", async (room) => socket.in(room).emit("stop typing"));
+
+  socket.on("new message", async (newMessageRecieved) => {
+    var chat = newMessageRecieved.chat;
+    if (!chat.users) return console.log("chat.users not defined");
+
+    chat.users.forEach((user) => {
+      if (user._id == newMessageRecieved.sender._id) return;
+      socket.in(user._id).emit("message recieved", newMessageRecieved);
+    });
+  });
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
+  });
+});

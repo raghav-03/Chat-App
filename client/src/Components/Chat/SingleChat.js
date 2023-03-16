@@ -17,21 +17,14 @@ import {
   clearerr,
 } from "../../Redux/Actions/chatAction";
 import ScrollableChat from "./ScrollableChat.js";
+import Lottie from "react-lottie";
+import animationData from "../../Animations/typing.json";
 
-// import ProfileModal from "./miscellaneous/ProfileModal";
-// import Lottie from "react-lottie";
-// import animationData from "../animations/typing.json";
-
-// import io from "socket.io-client";
-// import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
-// import { ChatState } from "../Context/ChatProvider";
-// const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
-// var socket, selectedChatCompare;
+import { socket } from "../../Services/Socket.js";
 
 const SingleChat = () => {
-  // const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [selectedChatCompare, setselectedChatCompare] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
@@ -41,48 +34,38 @@ const SingleChat = () => {
   const { message, getmessageloading, getmessageerror } = useSelector(
     (state) => state.GETMessageReducer
   );
-  const { sendmessageloading, sendmessageerror, messageloading } = useSelector(
-    (state) => state.SendMessageReducer
-  );
+  const {
+    sendmessageloading,
+    sendmessageerror,
+    messageloading,
+    newchat,
+    sendmessagesuccess,
+  } = useSelector((state) => state.SendMessageReducer);
 
   const dispatch = useDispatch();
 
-  // const defaultOptions = {
-  //   loop: true,
-  //   autoplay: true,
-  //   animationData: animationData,
-  //   rendererSettings: {
-  //     preserveAspectRatio: "xMidYMid slice",
-  //   },
-  // };
-  // const { selectedChat, setSelectedChat, user, notification, setNotification } =
-  //   ChatState();
-  const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
-      // socket.emit("stop typing", selectedChat._id);
-      setNewMessage("");
-      dispatch(sendmessage(chat._id, newMessage));
-    }
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
-  // useEffect(() => {
-  // socket = io(ENDPOINT);
-  // socket.emit("setup", user);
-  // socket.on("connected", () => setSocketConnected(true));
-  // socket.on("typing", () => setIsTyping(true));
-  // socket.on("stop typing", () => setIsTyping(false));
-  // eslint-disable-next-line
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchMessages();
-
-  //   selectedChatCompare = selectedChat;
-  //   // eslint-disable-next-line
-  // }, [selectedChat]);
+  useEffect(() => {
+    // socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+    // eslint - disable - next - line;
+  }, []);
 
   useEffect(() => {
+    setselectedChatCompare(chat);
     dispatch(getmessage(chat._id));
+    socket.emit("join chat", chat._id);
   }, [dispatch, chat, sendmessageloading]);
 
   // useEffect(() => {
@@ -91,41 +74,58 @@ const SingleChat = () => {
   //   }
   // }, [dispatch, getchaterror]);
 
-  // useEffect(() => {
-  //   socket.on("message recieved", (newMessageRecieved) => {
-  //     if (
-  //       !selectedChatCompare || // if chat is not selected or doesn't match current chat
-  //       selectedChatCompare._id !== newMessageRecieved.chat._id
-  //     ) {
-  //       if (!notification.includes(newMessageRecieved)) {
-  //         setNotification([newMessageRecieved, ...notification]);
-  //         setFetchAgain(!fetchAgain);
-  //       }
-  //     } else {
-  //       setMessages([...messages, newMessageRecieved]);
-  //     }
-  //   });
-  // });
+  useEffect(() => {
+    socket.on("message recieved", async (newMessageRecieved) => {
+      if (
+        !selectedChatCompare || // if chat is not selected or doesn't match current chat
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+        // Send Notification
+        // if (!notification.includes(newMessageRecieved)) {
+        //   setNotification([newMessageRecieved, ...notification]);
+        //   setFetchAgain(!fetchAgain);
+        // }
+      } else {
+        if (chat._id === undefined) return;
+        if (chat._id === newMessageRecieved.chat._id) {
+          dispatch(getmessage(chat._id));
+        }
+      }
+    });
+  });
+
+  const sendMessage = async (event) => {
+    if (event.key === "Enter" && newMessage) {
+      socket.emit("stop typing", chat._id);
+      setNewMessage("");
+      dispatch(sendmessage(chat._id, newMessage));
+    }
+  };
 
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
-    // if (!socketConnected) return;
-    // if (!typing) {
-    //   setTyping(true);
-    //   socket.emit("typing", selectedChat._id);
-    // }
-    // let lastTypingTime = new Date().getTime();
-    // var timerLength = 3000;
-    // setTimeout(() => {
-    //   var timeNow = new Date().getTime();
-    //   var timeDiff = timeNow - lastTypingTime;
-    //   if (timeDiff >= timerLength && typing) {
-    //     socket.emit("stop typing", selectedChat._id);
-    //     setTyping(false);
-    //   }
-    // }, timerLength);
+    if (!socketConnected) return;
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", chat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", chat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
-
+  useEffect(() => {
+    if (sendmessagesuccess === true) {
+      socket.emit("new message", newchat);
+      dispatch({ type: "SEND_MESSAGE_RESET" });
+    }
+  }, [sendmessagesuccess]);
   return (
     <>
       {Object.keys(chat).length ? (
@@ -170,10 +170,7 @@ const SingleChat = () => {
             borderRadius="lg"
             overflowY="hidden"
           >
-            {getchatloading ||
-            messageloading ||
-            message === undefined ||
-            Object.keys(message).length === 0 ? (
+            {getchatloading || messageloading || message === undefined ? (
               <Spinner
                 size="xl"
                 w={20}
@@ -193,18 +190,18 @@ const SingleChat = () => {
               isRequired
               mt={3}
             >
-              {/* {istyping ? (
+              {istyping ? (
                 <div>
                   <Lottie
                     options={defaultOptions}
-                    // height={50}
+                    height={50}
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
                   />
                 </div>
               ) : (
                 <></>
-              )} */}
+              )}
               <Input
                 variant="filled"
                 bg="#E0E0E0"
