@@ -10,7 +10,9 @@ exports.getchatbyid = async (req, res) => {
         message: "ChatId param not sent with request",
       });
     }
-    var chat = await Chat.findById(chatId).populate("users", "-password");
+    var chat = await Chat.findById(chatId)
+      .populate("users", "-password")
+      .populate("latestMessage");
     chat = await User.populate(chat, {
       path: "latestMessage.sender",
       select: "name pic email",

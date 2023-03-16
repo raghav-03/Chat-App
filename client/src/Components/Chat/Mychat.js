@@ -12,6 +12,7 @@ import {
 } from "../../Redux/Actions/chatAction";
 import GroupModal from "../../Pages/GroupModal";
 import { getSender } from "../../config/chatlogic";
+import { SET_MESSAGE_LOADING } from "../../Redux/Constants/chatConstants";
 const MyChats = () => {
   const [selectedChatId, setSelectedChatId] = useState("");
   const dispatch = useDispatch();
@@ -64,6 +65,7 @@ const MyChats = () => {
 
   useEffect(() => {
     dispatch(getchatbyid(selectedChatId));
+    dispatch({ type: SET_MESSAGE_LOADING });
   }, [
     dispatch,
     selectedChatId,

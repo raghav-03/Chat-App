@@ -11,6 +11,8 @@ import {
   RenameGroupReducer,
   AddToGroupReducer,
   RemoveFromGroupReducer,
+  GETMessageReducer,
+  SendMessageReducer,
 } from "./Reducers/chatReducer";
 const reducer = combineReducers({
   user: userReducer,
@@ -22,6 +24,8 @@ const reducer = combineReducers({
   RenameGroupReducer: RenameGroupReducer,
   AddToGroupReducer: AddToGroupReducer,
   RemoveFromGroupReducer: RemoveFromGroupReducer,
+  GETMessageReducer: GETMessageReducer,
+  SendMessageReducer: SendMessageReducer,
 });
 
 let initialstate = {};

@@ -24,6 +24,12 @@ import {
   REMOVE_FROM_GROUP_CHAT_REQUEST,
   REMOVE_FROM_GROUP_CHAT_SUCCESS,
   REMOVE_FROM_GROUP_CHAT_FAIL,
+  SEND_MESSAGE_REQUEST,
+  SEND_MESSAGE_SUCCESS,
+  SEND_MESSAGE_FAIL,
+  GET_MESSAGE_REQUEST,
+  GET_MESSAGE_SUCCESS,
+  GET_MESSAGE_FAIL,
 } from "../Constants/chatConstants";
 import axios from "axios";
 
@@ -154,6 +160,36 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: REMOVE_FROM_GROUP_CHAT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const sendmessage = (chatId, content) => async (dispatch) => {
+  try {
+    dispatch({ type: SEND_MESSAGE_REQUEST });
+    const config = { headers: { "Content-Type": "application/json" } };
+    let link = `/message`;
+    const { data } = await axios.post(link, { chatId, content }, config);
+    dispatch({ type: SEND_MESSAGE_SUCCESS, payload: data.chat });
+  } catch (error) {
+    dispatch({
+      type: SEND_MESSAGE_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
+export const getmessage = (chatId) => async (dispatch) => {
+  try {
+    dispatch({ type: GET_MESSAGE_REQUEST });
+    const config = { headers: { "Content-Type": "application/json" } };
+    let link = `/message/${chatId}`;
+    const { data } = await axios.get(link, config);
+    dispatch({ type: GET_MESSAGE_SUCCESS, payload: data.messages });
+  } catch (error) {
+    dispatch({
+      type: GET_MESSAGE_FAIL,
       payload: error.response.data.message,
     });
   }

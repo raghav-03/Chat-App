@@ -25,6 +25,13 @@ import {
   REMOVE_FROM_GROUP_CHAT_FAIL,
   REMOVE_FROM_GROUP_CHAT_REQUEST,
   REMOVE_FROM_GROUP_CHAT_SUCCESS,
+  GET_MESSAGE_REQUEST,
+  GET_MESSAGE_SUCCESS,
+  GET_MESSAGE_FAIL,
+  SEND_MESSAGE_FAIL,
+  SEND_MESSAGE_REQUEST,
+  SEND_MESSAGE_SUCCESS,
+  SET_MESSAGE_LOADING,
 } from "../Constants/chatConstants";
 export const SearchReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -256,6 +263,68 @@ export const RemoveFromGroupReducer = (state = { chat: {} }, action) => {
       return {
         ...state,
         removefromgroupchaterror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const SendMessageReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SEND_MESSAGE_REQUEST:
+      return {
+        sendmessageloading: true,
+      };
+    case SEND_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        sendmessageloading: false,
+      };
+    case SEND_MESSAGE_FAIL:
+      return {
+        ...state,
+        sendmessageloading: false,
+        sendmessageerror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        sendmessageerror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const GETMessageReducer = (state = { message: [] }, action) => {
+  switch (action.type) {
+    case GET_MESSAGE_REQUEST:
+      return {
+        ...state,
+        getmessageloading: true,
+      };
+    case SET_MESSAGE_LOADING:
+      return {
+        messageloading: true,
+      };
+    case GET_MESSAGE_SUCCESS:
+      return {
+        ...state,
+        getmessageloading: false,
+        message: action.payload,
+        messageloading: false,
+      };
+    case GET_MESSAGE_FAIL:
+      return {
+        ...state,
+        getmessageloading: false,
+        message: [],
+        getmessageerror: action.payload,
+      };
+    case CLEAR_ERROR:
+      return {
+        ...state,
+        getmessageerror: null,
       };
     default:
       return state;

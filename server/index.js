@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const cors = require("cors");
-const { chats } = require("./data/data.js");
 const { notFound } = require("./middlewares/errorhandler");
 const cloudinary = require("cloudinary");
 const cookieParser = require("cookie-parser");
@@ -18,6 +17,7 @@ app.get("/", (req, res) => res.send("hey"));
 app.use("/user", require("./routes/userRoutes.js"));
 
 app.use("/chat", require("./routes/chatRoutes.js"));
+app.use("/message", require("./routes/messgaeRoute"));
 
 app.use(notFound); // to handle 404 error
 
