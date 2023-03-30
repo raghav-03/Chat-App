@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import Store from "../src/Redux/Store.js";
 import { Provider } from "react-redux";
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <Provider store={Store}>
     <BrowserRouter>

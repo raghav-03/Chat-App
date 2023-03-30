@@ -32,7 +32,7 @@ import {
   GET_MESSAGE_FAIL,
 } from "../Constants/chatConstants";
 import axios from "axios";
-// import { socket } from "../../Services/Socket";
+import { socket } from "../../Services/Socket";
 export const searchaction =
   (search = "") =>
   async (dispatch) => {
@@ -63,8 +63,9 @@ export const accessChat = (userId) => async (dispatch) => {
     const config = { headers: { "Content-Type": "application/json" } };
     let link = `/chat`;
     const { data } = await axios.post(link, { userId }, config);
-
     dispatch({ type: CHAT_SUCCESS, payload: data.chat });
+    dispatch(getchatbyid(data.chat._id));
+    dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
     dispatch({
       type: CHAT_FAIL,
@@ -89,14 +90,32 @@ export const fetchChat = () => async (dispatch) => {
   }
 };
 
+export const fetchChatwloading = () => async (dispatch) => {
+  try {
+    // dispatch({ type: FETCH_CHAT_REQUEST });
+    const config = { headers: { "Content-Type": "application/json" } };
+    let link = `/chat`;
+    const { data } = await axios.get(link, config);
+
+    dispatch({ type: FETCH_CHAT_SUCCESS, payload: data.allchats });
+  } catch (error) {
+    dispatch({
+      type: FETCH_CHAT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
+
 export const CreateGroupchat = (name, users) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_GROUP_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
     let link = `/chat/create-group`;
     const { data } = await axios.post(link, { name, users }, config);
-
-    dispatch({ type: CREATE_GROUP_CHAT_SUCCESS, payload: data.allchats });
+    dispatch({ type: CREATE_GROUP_CHAT_SUCCESS, payload: data.chat });
+    socket.emit("refresh", data.chat);
+    dispatch(getchatbyid(data.chat._id));
+    dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
     dispatch({
       type: CREATE_GROUP_CHAT_FAIL,

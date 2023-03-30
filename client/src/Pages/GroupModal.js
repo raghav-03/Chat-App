@@ -31,7 +31,7 @@ const GroupModal = ({ children }) => {
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const toast = useToast();
-  const { searcherror, searchloading, users } = useSelector(
+  const { searcherror, searchloading, users, resetusers } = useSelector(
     (state) => state.searchusers
   );
   const { groupchaterror, groupchatloading } = useSelector(
@@ -100,6 +100,11 @@ const GroupModal = ({ children }) => {
       dispatch(clearerr());
     }
   }, [dispatch, searcherror, toast, groupchaterror]);
+  useEffect(() => {
+    if (resetusers === true) {
+      setSelectedUsers([]);
+    }
+  }, [resetusers]);
   return (
     <>
       <span onClick={onOpen}>{children}</span>

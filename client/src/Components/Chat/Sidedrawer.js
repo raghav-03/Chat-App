@@ -17,12 +17,10 @@ import {
   Input,
   Spinner,
 } from "@chakra-ui/react";
-import {
-  BellIcon,
-  Search2Icon,
-  NotificationBadge,
-  ChevronDownIcon,
-} from "@chakra-ui/icons";
+import { BellIcon, Search2Icon, ChevronDownIcon } from "@chakra-ui/icons";
+import { Effect } from "react-notification-badge";
+import NotificationBadge from "react-notification-badge";
+
 import { Avatar } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import React, { Fragment, useEffect, useState } from "react";
@@ -35,18 +33,26 @@ import ProfileModal from "../../Pages/ProfileModal";
 import ChatLoading from "./ChatLoading";
 import UserListItem from "../User/UserListItem";
 import { accessChat } from "../../Redux/Actions/chatAction";
+import { getSender } from "../../config/chatlogic";
 
+import {
+  fetchChat,
+  sendmessage,
+  getmessage,
+  getchatbyid,
+} from "../../Redux/Actions/chatAction";
 const Sidedrawer = () => {
   const dispatch = useDispatch();
   const toast = useToast();
   const history = useHistory();
-  const { searcherror, searchloading, users } = useSelector(
+  const { searcherror, searchloading, users, resetusers } = useSelector(
     (state) => state.searchusers
   );
   const { error, loading, user } = useSelector((state) => state.user);
   const { chaterror, chatloading, chat } = useSelector(
     (state) => state.accesschat
   );
+  const { notification } = useSelector((state) => state.NotificationReducer);
 
   const createchat = async (userId) => {
     dispatch(accessChat(userId));
@@ -104,6 +110,11 @@ const Sidedrawer = () => {
       dispatch(clearerr());
     }
   }, [dispatch, error, searcherror, chaterror, toast]);
+  useEffect(() => {
+    if (resetusers === true) {
+      setSearch([]);
+    }
+  }, [resetusers]);
   return (
     <Fragment>
       {loading ? (
@@ -137,28 +148,39 @@ const Sidedrawer = () => {
             <div>
               <Menu>
                 <MenuButton p={1}>
-                  {/* <NotificationBadge
-                count={notification.length}
-                effect={Effect.SCALE}
-              /> */}
+                  <NotificationBadge
+                    count={notification.length}
+                    effect={Effect.SCALE}
+                  />
                   <BellIcon fontSize="2xl" m={1} />
                 </MenuButton>
-                {/* <MenuList pl={2}>
-              {!notification.length && "No New Messages"}
-              {notification.map((notif) => (
-                <MenuItem
-                  key={notif._id}
-                  onClick={() => {
-                    setSelectedChat(notif.chat);
-                    setNotification(notification.filter((n) => n !== notif));
-                  }}
-                >
-                  {notif.chat.isGroupChat
-                    ? `New Message in ${notif.chat.chatName}`
-                    : `New Message from ${getSender(user, notif.chat.users)}`}
-                </MenuItem>
-              ))}
-            </MenuList> */}
+                <MenuList pl={2}>
+                  {!notification.length && "No New Messages"}
+                  {notification.map((notif) => (
+                    <MenuItem
+                      key={notif._id}
+                      onClick={() => {
+                        // change chat to given chat
+                        // setSelectedChat(notif.chat);
+                        dispatch(getchatbyid(notif.chat._id));
+                        const newnotification = notification.filter(
+                          (n) => n !== notif
+                        );
+                        dispatch({
+                          type: "SET_NOTIFICATION",
+                          payload: newnotification,
+                        });
+                      }}
+                    >
+                      {notif.chat.isGroupChat
+                        ? `New Message in ${notif.chat.chatName}`
+                        : `New Message from ${getSender(
+                            user,
+                            notif.chat.users
+                          )}`}
+                    </MenuItem>
+                  ))}
+                </MenuList>
               </Menu>
               <Menu>
                 <MenuButton

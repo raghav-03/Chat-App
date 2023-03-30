@@ -6,7 +6,7 @@ exports.islogin = async (req, res, next) => {
     if (token === undefined) {
       return res.status(401).send({
         success: false,
-        messgae: "Login First",
+        // messgae: "Login First",
       });
     } else {
       var decoded = jwt.verify(token, process.env.Secret_key);
@@ -17,7 +17,7 @@ exports.islogin = async (req, res, next) => {
       } else {
         return res.status(401).json({
           success: false,
-          message: "Login First!!",
+          // message: "Login First!!",
         });
       }
     }

@@ -49,20 +49,31 @@ io.on("connection", (socket) => {
     console.log("User Joined Room: " + room);
   });
 
-  socket.on("typing", async (room) => socket.in(room).emit("typing"));
-  socket.on("stop typing", async (room) => socket.in(room).emit("stop typing"));
-
+  socket.on("typing", async (room) => {
+    socket.in(room).emit("typing", room);
+  });
+  socket.on("stop_typing", async (room) => {
+    socket.in(room).emit("stop_typing", room);
+  });
   socket.on("new message", async (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
     if (!chat.users) return console.log("chat.users not defined");
-
     chat.users.forEach((user) => {
       if (user._id == newMessageRecieved.sender._id) return;
-      socket.in(user._id).emit("message recieved", newMessageRecieved);
+      socket.in(user._id).emit("message_recieved", newMessageRecieved);
     });
   });
-
-  socket.off("setup", () => {
+  socket.on("refresh", async (chat) => {
+    if (!chat.users) return console.log("chat.users not defined");
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("refreshPage");
+    });
+  });
+  socket.on("leave_chat", async (room) => {
+    socket.leave(room);
+    console.log("User Leaved Room: " + room);
+  });
+  socket.off("setup", (userData) => {
     console.log("USER DISCONNECTED");
     socket.leave(userData._id);
   });

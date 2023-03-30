@@ -12,7 +12,6 @@ function App() {
   const { error } = useSelector((state) => state.user);
   const toast = useToast();
   useEffect(() => {
-    dispatch(loadcredentials());
     if (error) {
       toast({
         title: error,
@@ -24,6 +23,9 @@ function App() {
       dispatch(clearerr());
     }
   }, [dispatch, error]);
+  useEffect(() => {
+    dispatch(loadcredentials());
+  }, [dispatch]);
   return (
     <div className="App">
       <Route exact path="/" component={Homepage} />

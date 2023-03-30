@@ -12,28 +12,28 @@ import { useSelector, useDispatch } from "react-redux";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { GET_CHAT_RESET } from "../../Redux/Constants/chatConstants";
 import {
+  fetchChat,
+  clearerr,
   sendmessage,
   getmessage,
-  clearerr,
+  getchatbyid,
+  fetchChatwloading,
 } from "../../Redux/Actions/chatAction";
 import ScrollableChat from "./ScrollableChat.js";
 import Lottie from "react-lottie";
 import animationData from "../../Animations/typing.json";
-
 import { socket } from "../../Services/Socket.js";
-
 const SingleChat = () => {
   const [newMessage, setNewMessage] = useState("");
-  const [selectedChatCompare, setselectedChatCompare] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [newnotification, Setnewnotification] = useState([]);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
-  const toast = useToast();
   const { chat, getchatloading } = useSelector((state) => state.GetChatReducer);
   const { user } = useSelector((state) => state.user);
-  const { message, getmessageloading, getmessageerror } = useSelector(
-    (state) => state.GETMessageReducer
-  );
+  const { message } = useSelector((state) => state.GETMessageReducer);
+  const { notification } = useSelector((state) => state.NotificationReducer);
+  // const { notification, setNotification } = ChatState();
   const {
     sendmessageloading,
     sendmessageerror,
@@ -52,56 +52,99 @@ const SingleChat = () => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-
   useEffect(() => {
-    // socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () => setIsTyping(true));
-    socket.on("stop typing", () => setIsTyping(false));
-    // eslint - disable - next - line;
-  }, []);
-
-  useEffect(() => {
-    setselectedChatCompare(chat);
-    dispatch(getmessage(chat._id));
-    socket.emit("join chat", chat._id);
-  }, [dispatch, chat, sendmessageloading]);
-
-  // useEffect(() => {
-  //   if (getchaterror) {
-  //     dispatch(clearerr());
-  //   }
-  // }, [dispatch, getchaterror]);
-
-  useEffect(() => {
-    socket.on("message recieved", async (newMessageRecieved) => {
+    socket.on("typing", (room) => {
+      setIsTyping(true);
+    });
+    socket.on("stop_typing", (room) => {
+      setIsTyping(false);
+    });
+    socket.on("refreshPage", () => {
+      dispatch(fetchChatwloading());
+    });
+    socket.on("message_recieved", async (newMessageRecieved) => {
       if (
-        !selectedChatCompare || // if chat is not selected or doesn't match current chat
-        selectedChatCompare._id !== newMessageRecieved.chat._id
+        !chat ||
+        chat._id !== newMessageRecieved.chat._id
+        // if chat is not selected or doesn't match current chat
       ) {
+        dispatch(fetchChatwloading());
         // Send Notification
+        // console.log(notification);
+        // console.log(newnotification);
+        // console.log(newMessageRecieved.chat._id);
+        // notification.filter(
+        //   (item) => item.chat._id !== newMessageRecieved.chat._id
+        // );
+        // console.log(newnotification);
+        Setnewnotification([newMessageRecieved, ...newnotification]);
+        // console.log(newMessageRecieved.chat._id);
+        // notification.filter((item) => {
+        //   console.log(item.chat._id);
+        // });
+        // console.log(notification);
+        // Setnewnotification([newMessageRecieved, ...notification]);
+        // if (!notification.includes(newMessageRecieved)) {
+        //   console.log([newMessageRecieved, ...notification]);
+        //
+        // }
+        // console.log(notification);
+        // console.log(newMessageRecieved);
+        // console.log([newMessageRecieved, ...notification]);
+        // Setnewnotification([newMessageRecieved, ...notification]);
+        // console.log(newnotification);
         // if (!notification.includes(newMessageRecieved)) {
         //   setNotification([newMessageRecieved, ...notification]);
         //   setFetchAgain(!fetchAgain);
         // }
+        // if (!notification.includes(newMessageRecieved.chat._id)) {
+        //   console.log(notification);
+        //   Setnewnotification([newMessageRecieved, ...notification]);
+        //   console.log(newnotification);
+        //   newnotification.push(newMessageRecieved);
+        //   dispatch({ type: "SET_NOTIFICATION", payload: newnotification });
+        // }
       } else {
-        if (chat._id === undefined) return;
-        if (chat._id === newMessageRecieved.chat._id) {
-          dispatch(getmessage(chat._id));
-        }
+        dispatch(getmessage(chat._id));
       }
     });
-  });
+    return function cleanup() {
+      socket.off("message_recieved");
+    };
+  }, []);
 
+  useEffect(() => {
+    // console.log(newnotification);
+    dispatch({ type: "SET_NOTIFICATION", payload: newnotification });
+  }, [newnotification]);
+
+  // useEffect(() => {
+  //   console.log(notification);
+  // }, [notification]);
+
+  useEffect(() => {
+    dispatch(getmessage(chat._id));
+    if (chat._id !== undefined) socket.emit("join chat", chat._id);
+  }, [chat]);
+  useEffect(() => {
+    if (sendmessageloading === false) {
+      dispatch(getmessage(chat._id));
+      dispatch(fetchChatwloading());
+    }
+  }, [sendmessageloading]);
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", chat._id);
+      socket.emit("stop_typing", chat._id);
       setNewMessage("");
       dispatch(sendmessage(chat._id, newMessage));
     }
   };
-
+  const chatreset = () => {
+    dispatch({ type: GET_CHAT_RESET });
+    socket.emit("leave_chat", chat._id);
+  };
   const typingHandler = (e) => {
     setNewMessage(e.target.value);
     if (!socketConnected) return;
@@ -115,7 +158,7 @@ const SingleChat = () => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", chat._id);
+        socket.emit("stop_typing", chat._id);
         setTyping(false);
       }
     }, timerLength);
@@ -143,7 +186,7 @@ const SingleChat = () => {
             <IconButton
               display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
-              onClick={() => dispatch({ type: GET_CHAT_RESET })}
+              onClick={chatreset}
             />
 
             {!chat.isGroupChat ? (
@@ -179,9 +222,7 @@ const SingleChat = () => {
                 margin="auto"
               />
             ) : (
-              <div className="messages">
-                <ScrollableChat />
-              </div>
+              <div className="messages">{<ScrollableChat />}</div>
             )}
 
             <FormControl

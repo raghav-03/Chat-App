@@ -33,6 +33,7 @@ import {
   SEND_MESSAGE_SUCCESS,
   SET_MESSAGE_LOADING,
   SEND_MESSAGE_RESET,
+  SET_NOTIFICATION,
 } from "../Constants/chatConstants";
 export const SearchReducer = (state = { users: [] }, action) => {
   switch (action.type) {
@@ -57,6 +58,12 @@ export const SearchReducer = (state = { users: [] }, action) => {
       return {
         ...state,
         searcherror: null,
+      };
+    case "CLEAR_SEARCH":
+      return {
+        ...state,
+        users: [],
+        resetusers: true,
       };
     default:
       return state;
@@ -337,6 +344,17 @@ export const GETMessageReducer = (state = { message: [] }, action) => {
       return {
         ...state,
         getmessageerror: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const NotificationReducer = (state = { notification: [] }, action) => {
+  switch (action.type) {
+    case SET_NOTIFICATION:
+      return {
+        notification: action.payload,
       };
     default:
       return state;

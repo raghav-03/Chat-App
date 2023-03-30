@@ -37,7 +37,6 @@ const MyChats = () => {
   );
   const { user } = useSelector((state) => state.user);
   const getchat = useSelector((state) => state.GetChatReducer);
-
   useEffect(() => {
     if (allchaterror) {
       toast({
@@ -82,6 +81,8 @@ const MyChats = () => {
     }
     if (Object.keys(getchat.chat).length === 0) {
       setSelectedChatId("");
+    } else {
+      setSelectedChatId(getchat.chat._id);
     }
   }, [dispatch, getchat.chat]);
   return (
@@ -147,7 +148,6 @@ const MyChats = () => {
                     ? getSender(user, chat.users)
                     : chat.chatName}
                 </Text>
-                {/* 
                 {chat.latestMessage && (
                   <Text fontSize="xs">
                     <b>{chat.latestMessage.sender.name} : </b>
@@ -155,7 +155,7 @@ const MyChats = () => {
                       ? chat.latestMessage.content.substring(0, 51) + "..."
                       : chat.latestMessage.content}
                   </Text>
-                )} */}
+                )}
               </Box>
             ))}
           </Stack>
