@@ -5,6 +5,7 @@ const cors = require("cors");
 const { notFound } = require("./middlewares/errorhandler");
 const cloudinary = require("cloudinary");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 app.use(express.json()); // to accept json data from frontend
 app.use(cors());
@@ -13,12 +14,17 @@ app.use(cookieParser()); // need to parse the cookies
 const mongodb = require("./config/db.js");
 mongodb();
 
-app.get("/", (req, res) => res.send("hey"));
+// app.get("/", (req, res) => res.send("hey"));
 app.use("/user", require("./routes/userRoutes.js"));
 
 app.use("/chat", require("./routes/chatRoutes.js"));
 app.use("/message", require("./routes/messgaeRoute"));
 
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+});
 app.use(notFound); // to handle 404 error
 
 cloudinary.config({

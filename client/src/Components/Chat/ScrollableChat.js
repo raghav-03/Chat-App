@@ -49,6 +49,10 @@ const ScrollableChat = () => {
                 maxWidth: "75%",
               }}
             >
+              {m.sender._id !== user._id && (
+                <span style={{ color: "grey" }}>{m.sender.name} </span>
+              )}
+
               {m.content}
             </span>
           </div>
