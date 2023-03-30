@@ -34,6 +34,7 @@ import ChatLoading from "./ChatLoading";
 import UserListItem from "../User/UserListItem";
 import { accessChat } from "../../Redux/Actions/chatAction";
 import { getSender } from "../../config/chatlogic";
+import { socket } from "../../Services/Socket.js";
 
 import {
   fetchChat,
@@ -49,9 +50,9 @@ const Sidedrawer = () => {
     (state) => state.searchusers
   );
   const { error, loading, user } = useSelector((state) => state.user);
-  const { chaterror, chatloading, chat } = useSelector(
-    (state) => state.accesschat
-  );
+  const { chaterror, chatloading } = useSelector((state) => state.accesschat);
+  const { chat, getchatloading } = useSelector((state) => state.GetChatReducer);
+
   const { notification } = useSelector((state) => state.NotificationReducer);
 
   const createchat = async (userId) => {
@@ -160,8 +161,7 @@ const Sidedrawer = () => {
                     <MenuItem
                       key={notif._id}
                       onClick={() => {
-                        // change chat to given chat
-                        // setSelectedChat(notif.chat);
+                        socket.emit("leave_chat", chat._id);
                         dispatch(getchatbyid(notif.chat._id));
                         const newnotification = notification.filter(
                           (n) => n !== notif

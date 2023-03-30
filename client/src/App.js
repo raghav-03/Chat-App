@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useToast } from "@chakra-ui/toast";
 import ProtectedRoute from "../src/Route/ProtectedRoute";
 import "./App.css";
+import Helmet from "react-helmet";
+
 function App() {
   const dispatch = useDispatch();
   const { error } = useSelector((state) => state.user);
@@ -28,6 +30,9 @@ function App() {
   }, [dispatch]);
   return (
     <div className="App">
+      <Helmet>
+        <title>Talk-a-Tive</title>
+      </Helmet>
       <Route exact path="/" component={Homepage} />
       <ProtectedRoute exact path="/chat" component={Chatpage} />
     </div>

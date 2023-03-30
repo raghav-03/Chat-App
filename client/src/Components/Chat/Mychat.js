@@ -13,6 +13,8 @@ import {
 import GroupModal from "../../Pages/GroupModal";
 import { getSender } from "../../config/chatlogic";
 import { SET_MESSAGE_LOADING } from "../../Redux/Constants/chatConstants";
+import { socket } from "../../Services/Socket.js";
+
 const MyChats = () => {
   const [selectedChatId, setSelectedChatId] = useState("");
   const dispatch = useDispatch();
@@ -63,6 +65,7 @@ const MyChats = () => {
   ]);
 
   useEffect(() => {
+    socket.emit("leave_chat", getchat.chat._id);
     dispatch(getchatbyid(selectedChatId));
     dispatch({ type: SET_MESSAGE_LOADING });
   }, [

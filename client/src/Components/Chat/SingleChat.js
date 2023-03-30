@@ -33,7 +33,6 @@ const SingleChat = () => {
   const { user } = useSelector((state) => state.user);
   const { message } = useSelector((state) => state.GETMessageReducer);
   const { notification } = useSelector((state) => state.NotificationReducer);
-  // const { notification, setNotification } = ChatState();
   const {
     sendmessageloading,
     sendmessageerror,
@@ -64,48 +63,19 @@ const SingleChat = () => {
     socket.on("refreshPage", () => {
       dispatch(fetchChatwloading());
     });
-    socket.on("message_recieved", async (newMessageRecieved) => {
+  }, []);
+  useEffect(() => {
+    socket.on("message_recieved", (newMessageRecieved) => {
       if (
         !chat ||
         chat._id !== newMessageRecieved.chat._id
         // if chat is not selected or doesn't match current chat
       ) {
         dispatch(fetchChatwloading());
-        // Send Notification
-        // console.log(notification);
-        // console.log(newnotification);
-        // console.log(newMessageRecieved.chat._id);
-        // notification.filter(
-        //   (item) => item.chat._id !== newMessageRecieved.chat._id
-        // );
-        // console.log(newnotification);
-        Setnewnotification([newMessageRecieved, ...newnotification]);
-        // console.log(newMessageRecieved.chat._id);
-        // notification.filter((item) => {
-        //   console.log(item.chat._id);
-        // });
-        // console.log(notification);
-        // Setnewnotification([newMessageRecieved, ...notification]);
-        // if (!notification.includes(newMessageRecieved)) {
-        //   console.log([newMessageRecieved, ...notification]);
-        //
-        // }
-        // console.log(notification);
-        // console.log(newMessageRecieved);
-        // console.log([newMessageRecieved, ...notification]);
-        // Setnewnotification([newMessageRecieved, ...notification]);
-        // console.log(newnotification);
-        // if (!notification.includes(newMessageRecieved)) {
-        //   setNotification([newMessageRecieved, ...notification]);
-        //   setFetchAgain(!fetchAgain);
-        // }
-        // if (!notification.includes(newMessageRecieved.chat._id)) {
-        //   console.log(notification);
-        //   Setnewnotification([newMessageRecieved, ...notification]);
-        //   console.log(newnotification);
-        //   newnotification.push(newMessageRecieved);
-        //   dispatch({ type: "SET_NOTIFICATION", payload: newnotification });
-        // }
+        const tempnotification = notification.filter(
+          (item) => item.chat._id !== newMessageRecieved.chat._id
+        );
+        Setnewnotification([newMessageRecieved, ...tempnotification]);
       } else {
         dispatch(getmessage(chat._id));
       }
@@ -113,16 +83,13 @@ const SingleChat = () => {
     return function cleanup() {
       socket.off("message_recieved");
     };
-  }, []);
+  });
 
   useEffect(() => {
-    // console.log(newnotification);
-    dispatch({ type: "SET_NOTIFICATION", payload: newnotification });
+    if (notification.length < newnotification.length) {
+      dispatch({ type: "SET_NOTIFICATION", payload: newnotification });
+    }
   }, [newnotification]);
-
-  // useEffect(() => {
-  //   console.log(notification);
-  // }, [notification]);
 
   useEffect(() => {
     dispatch(getmessage(chat._id));
