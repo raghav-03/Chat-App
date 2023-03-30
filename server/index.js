@@ -33,8 +33,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const server = app.listen(process.env.Port || 3601, () =>
-  console.log(`Sever Running on port ${process.env.Port || 3601}`)
+const server = app.listen(process.env.PORT || 3601, () =>
+  console.log(`Sever Running on port ${process.env.PORT || 3601}`)
 );
 const io = require("socket.io")(server, {
   pingtimeout: 60000,
