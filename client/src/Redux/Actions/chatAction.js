@@ -39,7 +39,7 @@ export const searchaction =
     try {
       dispatch({ type: SEARCH_REQUEST });
       const config = { headers: { "Content-Type": "application/json" } };
-      let link = `/user/?search=${search}`;
+      let link = `/api/user/?search=${search}`;
       const { data } = await axios.get(link, config);
 
       dispatch({ type: SEARCH_SUCCESS, payload: data.users });
@@ -61,7 +61,7 @@ export const accessChat = (userId) => async (dispatch) => {
   try {
     dispatch({ type: CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat`;
+    let link = `/api/chat`;
     const { data } = await axios.post(link, { userId }, config);
     dispatch({ type: CHAT_SUCCESS, payload: data.chat });
     dispatch(getchatbyid(data.chat._id));
@@ -78,7 +78,7 @@ export const fetchChat = () => async (dispatch) => {
   try {
     dispatch({ type: FETCH_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat`;
+    let link = `/api/chat`;
     const { data } = await axios.get(link, config);
 
     dispatch({ type: FETCH_CHAT_SUCCESS, payload: data.allchats });
@@ -94,7 +94,7 @@ export const fetchChatwloading = () => async (dispatch) => {
   try {
     // dispatch({ type: FETCH_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat`;
+    let link = `/api/chat`;
     const { data } = await axios.get(link, config);
 
     dispatch({ type: FETCH_CHAT_SUCCESS, payload: data.allchats });
@@ -110,7 +110,7 @@ export const CreateGroupchat = (name, users) => async (dispatch) => {
   try {
     dispatch({ type: CREATE_GROUP_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat/create-group`;
+    let link = `/api/chat/create-group`;
     const { data } = await axios.post(link, { name, users }, config);
     dispatch({ type: CREATE_GROUP_CHAT_SUCCESS, payload: data.chat });
     socket.emit("refresh", data.chat);
@@ -128,7 +128,7 @@ export const getchatbyid = (chatId) => async (dispatch) => {
   try {
     dispatch({ type: GET_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat/getchat`;
+    let link = `/api/chat/getchat`;
     const { data } = await axios.post(link, { chatId }, config);
     dispatch({ type: GET_CHAT_SUCCESS, payload: data.chat });
   } catch (error) {
@@ -143,7 +143,7 @@ export const renamegroupchat = (chatId, name) => async (dispatch) => {
   try {
     dispatch({ type: RENAME_GROUP_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat/rename-group`;
+    let link = `/api/chat/rename-group`;
     const { data } = await axios.put(link, { chatId, name }, config);
     dispatch({ type: RENAME_GROUP_CHAT_SUCCESS, payload: data.chat });
   } catch (error) {
@@ -158,7 +158,7 @@ export const addtogroupchat = (chatId, userId) => async (dispatch) => {
   try {
     dispatch({ type: ADDTO_GROUP_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat/addtogroup`;
+    let link = `/api/chat/addtogroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: ADDTO_GROUP_CHAT_SUCCESS, payload: data.chat });
   } catch (error) {
@@ -173,7 +173,7 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
   try {
     dispatch({ type: REMOVE_FROM_GROUP_CHAT_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/chat/removefromgroup`;
+    let link = `/api/chat/removefromgroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: REMOVE_FROM_GROUP_CHAT_SUCCESS, payload: data.chat });
   } catch (error) {
@@ -188,7 +188,7 @@ export const sendmessage = (chatId, content) => async (dispatch) => {
   try {
     dispatch({ type: SEND_MESSAGE_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/message`;
+    let link = `/api/message`;
     const { data } = await axios.post(link, { chatId, content }, config);
     dispatch({ type: SEND_MESSAGE_SUCCESS, payload: data.data });
     // socket.emit("new message", data.data);
@@ -204,7 +204,7 @@ export const getmessage = (chatId) => async (dispatch) => {
   try {
     dispatch({ type: GET_MESSAGE_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
-    let link = `/message/${chatId}`;
+    let link = `/api/message/${chatId}`;
     const { data } = await axios.get(link, config);
     dispatch({ type: GET_MESSAGE_SUCCESS, payload: data.messages });
   } catch (error) {

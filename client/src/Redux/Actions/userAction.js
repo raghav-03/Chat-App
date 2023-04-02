@@ -19,7 +19,7 @@ export const loginaction = (email, password) => async (dispatch) => {
     dispatch({ type: LOGIN_REQUEST });
     const config = { headers: { "Content-Type": "application/json" } };
     const { data } = await axios.post(
-      `/user/login`,
+      `/api/user/login`,
       { email, password },
       config
     );
@@ -41,7 +41,7 @@ export const registeraction =
       const config = { headers: { "Content-Type": "application/json" } };
 
       const { data } = await axios.post(
-        `/user/signup`,
+        `/api/user/signup`,
         { name, email, password, avatar, confirmpassword },
         config
       );
@@ -63,7 +63,7 @@ export const clearerr = () => async (dispatch) => {
 
 export const logoutaction = () => async (dispatch) => {
   try {
-    await axios.get(`/user/logout`);
+    await axios.get(`/api/user/logout`);
     dispatch({ type: LOGOUT_SUCCESS });
   } catch (error) {
     dispatch({
@@ -76,7 +76,7 @@ export const loadcredentials = () => async (dispatch) => {
   try {
     dispatch({ type: LOAD_REQUEST });
 
-    const { data } = await axios.get(`/user/userdetail`);
+    const { data } = await axios.get(`/api/user/userdetail`);
     dispatch({ type: LOAD_SUCCESS, payload: data.user });
   } catch (error) {
     dispatch({

@@ -15,10 +15,10 @@ const mongodb = require("./config/db.js");
 mongodb();
 
 // app.get("/", (req, res) => res.send("hey"));
-app.use("/user", require("./routes/userRoutes.js"));
+app.use("/api/user", require("./routes/userRoutes.js"));
 
-app.use("/chat", require("./routes/chatRoutes.js"));
-app.use("/message", require("./routes/messgaeRoute"));
+app.use("/api/chat", require("./routes/chatRoutes.js"));
+app.use("/api/message", require("./routes/messgaeRoute"));
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
