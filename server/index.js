@@ -7,10 +7,12 @@ const cloudinary = require("cloudinary");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 
-app.use(express.json()); // to accept json data from frontend
 app.use(cors());
 dotenv.config();
 app.use(cookieParser()); // need to parse the cookies
+
+app.use(express.json({ limit: "50mb" })); // to accept json data from frontend
+app.use(express.urlencoded({ limit: "50mb" }));
 const mongodb = require("./config/db.js");
 mongodb();
 
