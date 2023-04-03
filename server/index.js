@@ -22,19 +22,15 @@ app.use("/api/message", require("./routes/messgaeRoute"));
 
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-// if (process.env.NODE_ENV === "production") {
-//   app.get("*", (req, res) => {
-//     res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
-//   });
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is running..");
-//   });
-// }
-
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
-});
+if (process.env.NODE_ENV === "development") {
+  app.get("/", (req, res) => {
+    res.send("API is running..");
+  });
+} else {
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
+  });
+}
 app.use(notFound); // to handle 404 error
 
 cloudinary.config({
