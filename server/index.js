@@ -52,6 +52,7 @@ const io = require("socket.io")(server, {
     // origin: "http://localhost:3601",
     origin: "*",
   },
+  transports: ["websocket", "polling"],
 });
 
 io.on("connection", (socket) => {
