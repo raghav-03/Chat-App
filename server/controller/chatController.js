@@ -150,6 +150,16 @@ exports.creategroupchat = async (req, res) => {
 
 exports.renamegroupchat = async (req, res) => {
   try {
+    var chat = await Chat.findById(req.body.chatId).populate(
+      "users",
+      "-password"
+    );
+    if (!chat.users.includes(req.User._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not authorized to make changes in this chat",
+      });
+    }
     const groupchat = await Chat.findByIdAndUpdate(
       req.body.chatId,
       {
@@ -164,6 +174,7 @@ exports.renamegroupchat = async (req, res) => {
       chat: groupchat,
     });
   } catch (e) {
+    co;
     res.status(400).json({
       success: false,
       message: e.message,

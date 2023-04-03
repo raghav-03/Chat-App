@@ -63,16 +63,6 @@ const UpdateGroupChatModal = () => {
     dispatch(renamegroupchat(chat._id, groupChatName));
   };
   useEffect(() => {
-    if (renamegroupchaterror) {
-      toast({
-        title: renamegroupchaterror,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      dispatch(clearerr());
-    }
     if (addtogroupchaterror) {
       toast({
         title: addtogroupchaterror,

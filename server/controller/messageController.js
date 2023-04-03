@@ -11,6 +11,13 @@ exports.sendmsg = async (req, res) => {
         message: "Invalid Data Passed",
       });
     }
+    var chat = await Chat.findById(chatId).populate("users", "-password");
+    if (!chat.users.includes(req.User._id)) {
+      return res.status(400).json({
+        success: false,
+        message: "You are not authorized to send message in this chat",
+      });
+    }
     var newmsg = await Message.create({
       content: content,
       chat: chatId,
@@ -30,7 +37,7 @@ exports.sendmsg = async (req, res) => {
       data: newmsg,
     });
   } catch (e) {
-    // console.log(e);
+    console.log(e);
 
     res.status(400).json({
       success: false,

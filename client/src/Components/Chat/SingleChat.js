@@ -24,6 +24,8 @@ import Lottie from "react-lottie";
 import animationData from "../../Animations/typing.json";
 import { socket } from "../../Services/Socket.js";
 const SingleChat = () => {
+  const toast = useToast();
+
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [newnotification, Setnewnotification] = useState([]);
@@ -136,6 +138,18 @@ const SingleChat = () => {
       dispatch({ type: "SEND_MESSAGE_RESET" });
     }
   }, [sendmessagesuccess]);
+  useEffect(() => {
+    if (sendmessageerror) {
+      toast({
+        title: sendmessageerror,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      dispatch(clearerr());
+    }
+  }, [dispatch, sendmessageerror]);
   return (
     <>
       {Object.keys(chat).length ? (
