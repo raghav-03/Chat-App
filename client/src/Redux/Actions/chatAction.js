@@ -161,6 +161,9 @@ export const addtogroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/addtogroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: ADDTO_GROUP_CHAT_SUCCESS, payload: data.chat });
+    socket.emit("refresh", data.chat);
+    dispatch(getchatbyid(data.chat._id));
+    dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
     dispatch({
       type: ADDTO_GROUP_CHAT_FAIL,
@@ -176,6 +179,9 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/removefromgroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: REMOVE_FROM_GROUP_CHAT_SUCCESS, payload: data.chat });
+    socket.emit("refresh", data.chat);
+    dispatch(getchatbyid(data.chat._id));
+    dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
     dispatch({
       type: REMOVE_FROM_GROUP_CHAT_FAIL,

@@ -14,7 +14,7 @@ exports.sendmsg = async (req, res) => {
     const check = await chat.users.filter(
       (item) => JSON.stringify(item._id) === JSON.stringify(req.User._id)
     );
-    if (!check) {
+    if (check.length === 0) {
       return res.status(400).json({
         success: false,
         message: "You are not authorized to send message in this chat",
