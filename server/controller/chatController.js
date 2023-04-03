@@ -154,7 +154,11 @@ exports.renamegroupchat = async (req, res) => {
       "users",
       "-password"
     );
-    if (!chat.users.includes(req.User._id)) {
+    var chat = await Chat.findById(chatId).populate("users", "-password");
+    const check = await chat.users.filter(
+      (item) => JSON.stringify(item._id) === JSON.stringify(req.User._id)
+    );
+    if (!check) {
       return res.status(400).json({
         success: false,
         message: "You are not authorized to make changes in this chat",

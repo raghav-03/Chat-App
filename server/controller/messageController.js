@@ -1,7 +1,6 @@
 const Message = require("../models/Messagemodel");
 const User = require("../models/Usermodel");
 const Chat = require("../models/Chatmodel");
-
 exports.sendmsg = async (req, res) => {
   try {
     const { content, chatId } = req.body;
@@ -12,7 +11,10 @@ exports.sendmsg = async (req, res) => {
       });
     }
     var chat = await Chat.findById(chatId).populate("users", "-password");
-    if (!chat.users.includes(req.User._id)) {
+    const check = await chat.users.filter(
+      (item) => JSON.stringify(item._id) === JSON.stringify(req.User._id)
+    );
+    if (!check) {
       return res.status(400).json({
         success: false,
         message: "You are not authorized to send message in this chat",
