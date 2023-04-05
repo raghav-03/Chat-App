@@ -46,7 +46,7 @@ Setup Config Files
 
 ```bash
   MONGODB_URI               //  MongoDB Atlas URL
-  Secret_key                //  Random Secret Key for Password
+  Secret_key                //  Random Secret Key
   CLOUDINARY_NAME
   CLOUDINARY_API_KEY
   CLOUDINARY_API_SECRET
