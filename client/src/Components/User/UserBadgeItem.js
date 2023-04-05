@@ -1,7 +1,10 @@
 import { CloseIcon } from "@chakra-ui/icons";
 import { Badge } from "@chakra-ui/layout";
+import { useSelector, useDispatch } from "react-redux";
 
-const UserBadgeItem = ({ user, handleFunction, admin }) => {
+const UserBadgeItem = ({ guser, handleFunction, admin }) => {
+  const { user } = useSelector((state) => state.user);
+
   return (
     <Badge
       px={2}
@@ -15,9 +18,9 @@ const UserBadgeItem = ({ user, handleFunction, admin }) => {
       cursor="pointer"
       onClick={handleFunction}
     >
-      {user.name}
-      {admin === user._id && <span> (Admin)</span>}
-      <CloseIcon pl={1} />
+      {guser.name}
+      {admin === guser._id && <span> (Admin)</span>}
+      {admin === user._id && <CloseIcon pl={1} />}
     </Badge>
   );
 };

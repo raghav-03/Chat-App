@@ -161,7 +161,7 @@ const UpdateGroupChatModal = () => {
               {chat.users.map((u) => (
                 <UserBadgeItem
                   key={u._id}
-                  user={u}
+                  guser={u}
                   admin={chat.groupAdmin}
                   handleFunction={() => handleRemove(u)}
                 />

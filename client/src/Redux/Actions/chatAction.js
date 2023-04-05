@@ -30,6 +30,7 @@ import {
   GET_MESSAGE_REQUEST,
   GET_MESSAGE_SUCCESS,
   GET_MESSAGE_FAIL,
+  // GET_CHAT_RESET,
 } from "../Constants/chatConstants";
 import axios from "axios";
 import { socket } from "../../Services/Socket";
@@ -182,6 +183,7 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
     socket.emit("refresh", data.chat);
     dispatch(getchatbyid(data.chat._id));
     dispatch({ type: "CLEAR_SEARCH" });
+    // dispatch({ type: GET_CHAT_RESET });
   } catch (error) {
     dispatch({
       type: REMOVE_FROM_GROUP_CHAT_FAIL,
