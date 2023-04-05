@@ -43,12 +43,15 @@ Install dependencies
 ```
 
 Setup Config Files
-MONGODB_URI
-Secret_key
-CLOUDINARY_NAME
-CLOUDINARY_API_KEY
-CLOUDINARY_API_SECRET
-NODE_ENV=development
+
+```bash
+  MONGODB_URI               //  MongoDB Atlas URL
+  Secret_key                //  Random Secret Key for Password
+  CLOUDINARY_NAME
+  CLOUDINARY_API_KEY
+  CLOUDINARY_API_SECRET
+  NODE_ENV=development
+```
 
 Start the server
 
