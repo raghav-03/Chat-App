@@ -140,7 +140,7 @@ const GroupModal = ({ children }) => {
               {selectedUsers.map((u) => (
                 <UserBadgeItem
                   key={u._id}
-                  user={u}
+                  guser={u}
                   handleFunction={() => handleDelete(u)}
                 />
               ))}
