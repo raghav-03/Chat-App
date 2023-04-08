@@ -258,6 +258,7 @@ export const RemoveFromGroupReducer = (state = { chat: {} }, action) => {
       return {
         ...state,
         removefromgroupchatloading: false,
+        removefromgroupsuccess: true,
         chat: action.payload,
       };
     case REMOVE_FROM_GROUP_CHAT_FAIL:
@@ -265,7 +266,13 @@ export const RemoveFromGroupReducer = (state = { chat: {} }, action) => {
         ...state,
         removefromgroupchatloading: false,
         chat: {},
+        removefromgroupsuccess: false,
         removefromgroupchaterror: action.payload,
+      };
+    case "RESET_GROUP_LEAVE_SUCCESS":
+      return {
+        ...state,
+        removefromgroupsuccess: false,
       };
     case CLEAR_ERROR:
       return {

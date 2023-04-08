@@ -18,7 +18,16 @@ const ScrollableChat = () => {
   const { sendmessageloading, sendmessageerror } = useSelector(
     (state) => state.SendMessageReducer
   );
-
+  const formatDate = (dateString) => {
+    const options = {
+      hour: "numeric",
+      hour12: true,
+      minute: "numeric",
+    };
+    return new Date(dateString)
+      .toLocaleDateString(undefined, options)
+      .substring(10);
+  };
   return (
     <ScrollableFeed>
       {message &&
@@ -50,10 +59,21 @@ const ScrollableChat = () => {
               }}
             >
               {m.sender._id !== user._id && (
-                <span style={{ color: "grey" }}>{m.sender.name} </span>
+                <span style={{ color: "grey", fontSize: "14px" }}>
+                  {m.sender.name}
+                </span>
               )}
-
+              {m.sender._id !== user._id && <br />}
               {m.content}
+              <span
+                style={{
+                  color: "grey",
+                  fontSize: "10px",
+                  marginLeft: "10px",
+                }}
+              >
+                {formatDate(m.updatedAt)}
+              </span>
             </span>
           </div>
         ))}

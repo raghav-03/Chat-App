@@ -139,7 +139,20 @@ export const getchatbyid = (chatId) => async (dispatch) => {
     });
   }
 };
-
+export const getchatbyidwloading = (chatId) => async (dispatch) => {
+  try {
+    // dispatch({ type: GET_CHAT_REQUEST });
+    const config = { headers: { "Content-Type": "application/json" } };
+    let link = `/api/chat/getchat`;
+    const { data } = await axios.post(link, { chatId }, config);
+    dispatch({ type: GET_CHAT_SUCCESS, payload: data.chat });
+  } catch (error) {
+    dispatch({
+      type: GET_CHAT_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 export const renamegroupchat = (chatId, name) => async (dispatch) => {
   try {
     dispatch({ type: RENAME_GROUP_CHAT_REQUEST });
@@ -147,6 +160,7 @@ export const renamegroupchat = (chatId, name) => async (dispatch) => {
     let link = `/api/chat/rename-group`;
     const { data } = await axios.put(link, { chatId, name }, config);
     dispatch({ type: RENAME_GROUP_CHAT_SUCCESS, payload: data.chat });
+    socket.emit("refresh", data.chat);
   } catch (error) {
     dispatch({
       type: RENAME_GROUP_CHAT_FAIL,
@@ -162,8 +176,8 @@ export const addtogroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/addtogroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: ADDTO_GROUP_CHAT_SUCCESS, payload: data.chat });
-    socket.emit("refresh", data.chat);
-    dispatch(getchatbyid(data.chat._id));
+    // socket.emit("refresh", data.chat);
+    // dispatch(getchatbyid(data.chat._id));
     dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
     dispatch({
@@ -180,10 +194,7 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/removefromgroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: REMOVE_FROM_GROUP_CHAT_SUCCESS, payload: data.chat });
-    socket.emit("refresh", data.chat);
-    dispatch(getchatbyid(data.chat._id));
-    dispatch({ type: "CLEAR_SEARCH" });
-    // dispatch({ type: GET_CHAT_RESET });
+    // socket.emit("refresh", data.chat);
   } catch (error) {
     dispatch({
       type: REMOVE_FROM_GROUP_CHAT_FAIL,

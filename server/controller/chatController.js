@@ -154,7 +154,6 @@ exports.renamegroupchat = async (req, res) => {
       "users",
       "-password"
     );
-    var chat = await Chat.findById(chatId).populate("users", "-password");
     const check = await chat.users.filter(
       (item) => JSON.stringify(item._id) === JSON.stringify(req.User._id)
     );
@@ -172,13 +171,12 @@ exports.renamegroupchat = async (req, res) => {
       {
         new: true,
       }
-    );
+    ).populate("users", "-password");
     return res.status(200).json({
       success: true,
       chat: groupchat,
     });
   } catch (e) {
-    co;
     res.status(400).json({
       success: false,
       message: e.message,

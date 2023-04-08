@@ -81,7 +81,6 @@ io.on("connection", (socket) => {
     });
   });
   socket.on("refresh", async (chat) => {
-    console.log("refresh");
     if (!chat.users) return console.log("chat.users not defined");
     chat.users.forEach((user) => {
       socket.in(user._id).emit("refreshPage");

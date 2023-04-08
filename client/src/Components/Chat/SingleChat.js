@@ -17,6 +17,7 @@ import {
   sendmessage,
   getmessage,
   getchatbyid,
+  getchatbyidwloading,
   fetchChatwloading,
 } from "../../Redux/Actions/chatAction";
 import ScrollableChat from "./ScrollableChat.js";
@@ -79,6 +80,7 @@ const SingleChat = () => {
         );
         Setnewnotification([newMessageRecieved, ...tempnotification]);
       } else {
+        dispatch(fetchChatwloading());
         dispatch(getmessage(chat._id));
       }
     });
