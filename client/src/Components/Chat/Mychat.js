@@ -75,8 +75,6 @@ const MyChats = () => {
     renamegroupchaterror,
     addtogroupchatloading,
     addtogroupchaterror,
-    removefromgroupchatloading,
-    removefromgroupchaterror,
   ]);
   useEffect(() => {
     if (getchat === undefined || getchat.chat === undefined) {

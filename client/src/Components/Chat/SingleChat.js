@@ -37,6 +37,11 @@ const SingleChat = () => {
   const { message } = useSelector((state) => state.GETMessageReducer);
   const { notification } = useSelector((state) => state.NotificationReducer);
   const {
+    removefromgroupchatloading,
+    removefromgroupchaterror,
+    removefromgroupsuccess,
+  } = useSelector((state) => state.RemoveFromGroupReducer);
+  const {
     sendmessageloading,
     sendmessageerror,
     messageloading,
@@ -64,6 +69,10 @@ const SingleChat = () => {
       setIsTyping(false);
     });
     socket.on("refreshPage", () => {
+      dispatch(fetchChatwloading());
+    });
+    socket.on("refreshlPage", () => {
+      chatreset();
       dispatch(fetchChatwloading());
     });
   }, []);

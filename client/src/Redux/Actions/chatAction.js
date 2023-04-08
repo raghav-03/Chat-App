@@ -194,7 +194,7 @@ export const removefromgroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/removefromgroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: REMOVE_FROM_GROUP_CHAT_SUCCESS, payload: data.chat });
-    // socket.emit("refresh", data.chat);
+    socket.emit("leaverefresh", userId);
   } catch (error) {
     dispatch({
       type: REMOVE_FROM_GROUP_CHAT_FAIL,

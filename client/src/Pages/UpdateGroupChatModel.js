@@ -25,8 +25,10 @@ import {
   searchaction,
   renamegroupchat,
   addtogroupchat,
+  getchatbyid,
   removefromgroupchat,
 } from "../Redux/Actions/chatAction";
+import { socket } from "../Services/Socket.js";
 
 const UpdateGroupChatModal = () => {
   const toast = useToast();
@@ -132,7 +134,15 @@ const UpdateGroupChatModal = () => {
       });
       return;
     }
+
     dispatch(removefromgroupchat(chat._id, user1._id));
+    if (user1._id === user._id) {
+      dispatch({ type: "GET_CHAT_RESET" });
+      socket.emit("leave_chat", chat._id);
+    } else {
+      dispatch(getchatbyid(chat._id));
+      dispatch({ type: "SET_MESSAGE_LOADING" });
+    }
   };
 
   return (

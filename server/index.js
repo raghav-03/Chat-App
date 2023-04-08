@@ -86,6 +86,11 @@ io.on("connection", (socket) => {
       socket.in(user._id).emit("refreshPage");
     });
   });
+  socket.on("leaverefresh", async (user) => {
+    if (!user) return console.log("user not defined");
+    console.log(user);
+    socket.in(user).emit("refreshlPage");
+  });
   socket.on("leave_chat", async (room) => {
     socket.leave(room);
     console.log("User Leaved Room: " + room);
