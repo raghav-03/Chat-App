@@ -141,7 +141,6 @@ const UpdateGroupChatModal = () => {
       socket.emit("leave_chat", chat._id);
     } else {
       dispatch(getchatbyid(chat._id));
-      dispatch({ type: "SET_MESSAGE_LOADING" });
     }
   };
 
