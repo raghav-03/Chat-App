@@ -176,7 +176,7 @@ export const addtogroupchat = (chatId, userId) => async (dispatch) => {
     let link = `/api/chat/addtogroup`;
     const { data } = await axios.put(link, { chatId, userId }, config);
     dispatch({ type: ADDTO_GROUP_CHAT_SUCCESS, payload: data.chat });
-    // socket.emit("refresh", data.chat);
+    socket.emit("refresh", data.chat);
     // dispatch(getchatbyid(data.chat._id));
     dispatch({ type: "CLEAR_SEARCH" });
   } catch (error) {
