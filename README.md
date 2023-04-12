@@ -34,11 +34,12 @@ Go to the project directory
 Install dependencies
 
 ```bash
+  cd server
   npm install
 ```
 
 ```bash
-  cd frontend/
+  cd client
   npm install
 ```
 
@@ -56,6 +57,7 @@ Setup Config Files
 Start the server
 
 ```bash
+  cd server
   npm run start
 ```
 
@@ -63,7 +65,7 @@ Start the Client
 
 ```bash
   //open now terminal
-  cd frontend
+  cd client
   npm start
 ```
 
